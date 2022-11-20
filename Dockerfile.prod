@@ -1,0 +1,15 @@
+FROM golang:1.19.3 as build
+
+WORKDIR /app
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o hello .  
+
+
+FROM alpine:3.16.3 as app
+
+WORKDIR /app
+
+COPY --from=build /app/hello .
+
+CMD [ "./hello" ]
